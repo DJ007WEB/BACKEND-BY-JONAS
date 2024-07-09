@@ -1,5 +1,6 @@
 const fs = require("fs");
 const http = require("http");
+const url = require("url");
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////// FILES
@@ -65,7 +66,7 @@ const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, "utf-8");
 const dataObj = JSON.parse(data);
 
 const server = http.createServer((req, res) => {
-  const pathname = req.url;
+  const { pathname, query } = url.parse(req.url, true);
 
   if (pathname === "/" || pathname === "/overview") {
     res.writeHead(200, { "Content-type": "text/html" });
@@ -78,7 +79,13 @@ const server = http.createServer((req, res) => {
 
     res.end(output);
   } else if (pathname === "/product") {
-    res.end("This is Product");
+    res.writeHead(200, { "Content-type": "text/html" });
+
+    const product = dataObj[query.id];
+
+    const output = replaceTemplate(tempProduct, product);
+
+    res.end(output);
   } else if (pathname === "/api") {
     res.writeHead(200, {
       "Content-type": "application/json",
