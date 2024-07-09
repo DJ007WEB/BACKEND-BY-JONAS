@@ -1,5 +1,5 @@
 const fs = require("fs");
-const http = require('http');
+const http = require("http");
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////// FILES
@@ -28,16 +28,24 @@ console.log("File has been written"); */
 //   });
 // });
 
-
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////// SERVER
 
+const server = http.createServer((req, res) => {
+  const pathname = req.url;
 
-const server = http.createServer((req,res) => {
-    res.end('Hello from the Server');
-})
+  if (pathname === "/" || pathname === "/overview") {
+    res.end("This is Overview");
+  } else if (pathname === "/product") {
+    res.end("This is Product");
+  } else {
+    res.writeHead(404, {
+        'Content-type': 'text/html'
+    })
+    res.end("<h1>404 Page not Found</h1>");
+  }
+});
 
-
-server.listen(8000,'127.0.0.1',() => {
-    console.log('Listening to requests on port 8000');
-})
+server.listen(8000, "127.0.0.1", () => {
+  console.log("Listening to requests on port 8000");
+});
